@@ -1,17 +1,23 @@
 package coinmachine;
+import java.awt.EventQueue;
+import java.util.Observer;
 import java.util.Scanner;
 
 /**
  * Console dialog for inserting coins into Coin machine.
- * @author James Brucker
+ * @author Nutcharueta Sihirunwong 5810545866
  *
  */
-public class Demo {
+public class MainCoinMachine {
 	// create a java.util.Scanner object for use in all methods
 	private static Scanner console = new Scanner( System.in );
+	public final static int capacity = 10; // how many coins the machine can hold
+	public static CoinMachine machine = new CoinMachine( capacity );
 	
-	
-	/** run the user interface */
+	/**
+	 * run the user interface
+	 * @param machine is a CoinMachine object.
+	 */
 	public void insertDialog(CoinMachine machine) {
 		System.out.println("Coin Machine has a capacity of "+ machine.getCapacity());
 		System.out.print("Input the value of coins to insert (separated by space). ");
@@ -47,23 +53,55 @@ public class Demo {
 		// CLUDGE: how to get the currency?  Look at the first coin in machine.
 		String currency = "";
 		if (machine.getCount() > 0) currency = machine.getCoins().get(0).getCurrency();
-//		System.out.printf("Machine contains %d coins and value %d %s\n",
-//				machine.getCount(), machine.getBalance(), currency);	
+		System.out.printf("Machine contains %d coins and value %d %s\n",
+		machine.getCount(), machine.getBalance(), currency);	
 		if (machine.isFull()) System.out.println("Machine is FULL.");
 	}
-	
+
 	/**
-	 * Run a console demo.
+	 * Run a console and UI.
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-		final int capacity = 10;  // how many coins the machine can hold
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					CoinUI coinUI = new CoinUI(machine);
+					coinUI.setVisible(true);
+					
+					CoinsMachineUI coinMachineUI = new CoinsMachineUI();
+					coinMachineUI.setVisible(true);
+					
+					
+					machine.addObserver( coinUI );
+					machine.addObserver( coinMachineUI );
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		
-		CoinMachine machine = new CoinMachine( capacity );
-		Demo demo = new Demo();
-		//TODO add observers
+		MainCoinMachine demo = new MainCoinMachine();
 		demo.insertDialog(machine);
 	}
+	/**
+	 * ActionListener of the coin button
+	 * @param insertValue is value of the coin button
+	 */
+	public void insertButtonListener(int insertValue) {
+		int value = insertValue;
+		Coin coin = new Coin( value , "Baht");
+		if ( machine.insert( coin ) ) {
+			System.out.println( "\n" + coin + " inserted" );
+			System.out.print( "Values of coins to insert: " );
+		}
+		if (machine.isFull()) {
+			System.out.println( coin + " inserted" );
+			displayMachineStatus( machine );
+		}
+	}
+	
 }
 
 

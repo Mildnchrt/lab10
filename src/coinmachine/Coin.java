@@ -2,7 +2,7 @@ package coinmachine;
 /**
  * A Coin represents metalic money with a value.
  */
-public class Coin /*TODO implements Comparable<Coin> */ {
+public class Coin {
 	/** value of the coin */
 	private final int value;
 	private final String currency;
@@ -10,12 +10,16 @@ public class Coin /*TODO implements Comparable<Coin> */ {
 	/**
 	 * Initialize a new Coin.
 	 * @param value is the value of the Coin
-	 * @pre the value is positive
+	 * @pre value is the positive number
 	 */
 	public Coin(int value) {
 		this(value, "Baht");
 	}
-	
+	/**
+	 * Initialize a new Coin
+	 * @param value is the value of the coin
+	 * @param currency is unit of the coin
+	 */
 	public Coin(int value, String currency) {
 		assert value > 0;  // if not, its YOUR fault
 		if (currency == null) throw new IllegalArgumentException("currency cannot be null");
@@ -61,9 +65,12 @@ public class Coin /*TODO implements Comparable<Coin> */ {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-//TODO Write a correct equals method for Coin.
-//     You can assume that the currency is never null.
-		return this == obj;
+		//TODO Write a correct equals method for Coin.
+		//You can assume that the currency is never null.
+		if (( this.getValue() == ((Coin)obj).getValue() ) && ( this.getCurrency().equals(((Coin)obj).getCurrency()) )) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -73,4 +80,6 @@ public class Coin /*TODO implements Comparable<Coin> */ {
 	public String toString() {
 		return value+"-"+currency;
 	}
+	
+
 }
